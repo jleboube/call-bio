@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://bio_user_8e6152d7:enPpceOj2j2ysBkaXfBwGl03L87AcRSFUTU%2FbrZPjUE%3D@db:5432/bios
+      - NODE_ENV=production
+      - JWT_SECRET=gxX3eev8qyU1vrqE6k3Ha7ayHf4IoB5G9329vXuNp3uOt92FqEaPflNS2V8ySAwGfgGw0sQyArL4ng0baWYXcA==
+      - JWT_EXPIRES_IN=24h
+      - MAX_FILE_SIZE=5242880
+      - UPLOAD_PATH=uploads
+    volumes:
+      - uploads-data:/app/uploads
+      - ssl-certs:/app/ssl
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=bio_user_8e6152d7
+      - POSTGRES_PASSWORD=enPpceOj2j2ysBkaXfBwGl03L87AcRSFUTU/brZPjUE=
+      - POSTGRES_DB=bios
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./server/migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  uploads-data:
+  ssl-certs:

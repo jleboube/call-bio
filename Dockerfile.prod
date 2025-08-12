@@ -1,0 +1,71 @@
+# Production Dockerfile - Optimized for deployment
+FROM node:18-alpine AS base
+
+# Install system dependencies
+RUN apk add --no-cache curl openssl
+
+# Build stage for client
+FROM base AS client-builder
+
+WORKDIR /app/client
+
+# Copy client package.json
+COPY client/package.json ./
+
+# Install client dependencies
+RUN npm install --no-fund --no-audit
+
+# Copy client source
+COPY client/ ./
+
+# Build client
+RUN npm run build
+
+# Production stage
+FROM base AS production
+
+WORKDIR /app
+
+# Copy server package.json
+COPY package.json ./
+
+# Install server production dependencies
+RUN npm install --omit=dev --no-fund --no-audit
+
+# Copy server code
+COPY server/ ./server/
+COPY .env ./
+
+# Copy client build from builder stage
+COPY --from=client-builder /app/client/dist ./client/dist
+
+# Create directories
+RUN mkdir -p uploads ssl && chmod 755 uploads ssl
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Generate SSL certificates as root
+RUN openssl genrsa -out /app/ssl/private-key.pem 2048 && \
+    openssl req -new -key /app/ssl/private-key.pem -out /app/ssl/cert.csr -subj "/C=US/ST=CA/L=San Francisco/O=Conference Call Bio/OU=IT Department/CN=call-bio.com" && \
+    openssl x509 -req -in /app/ssl/cert.csr -signkey /app/ssl/private-key.pem -out /app/ssl/certificate.pem -days 365 && \
+    chmod 600 /app/ssl/private-key.pem && \
+    chmod 644 /app/ssl/certificate.pem && \
+    rm /app/ssl/cert.csr
+
+# Set ownership
+RUN chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f -k https://localhost:3000/health || exit 1
+
+# Start application
+CMD ["node", "server/index.js"]
