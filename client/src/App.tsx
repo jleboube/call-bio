@@ -26,8 +26,8 @@ function App() {
               </PrivateRoute>
             } />
             <Route path="/bio/:userId" element={<PublicBio />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+            <Route path="/TermsOfService" element={<TermsOfService />} />
             <Route path="/api-docs" element={<ApiDocumentation />} />
             <Route path="/about" element={<About />} />
           </Routes>

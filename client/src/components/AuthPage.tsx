@@ -138,9 +138,9 @@ const AuthPage: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500">
               By {isLogin ? 'signing in' : 'creating an account'}, you agree to our{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500">Terms of Service</a>
+              <Link to="/TermsOfService" className="text-blue-600 hover:text-blue-500">Terms of Service</Link>
               {' '}and{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+              <Link to="/PrivacyPolicy" className="text-blue-600 hover:text-blue-500">Privacy Policy</Link>
             </p>
           </div>
         </div>
