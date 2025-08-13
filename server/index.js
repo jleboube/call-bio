@@ -10,6 +10,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const bioRoutes = require('./routes/bios');
 const apiRoutes = require('./routes/api');
+const zoomRoutes = require('./routes/zoom');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,6 +48,7 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use('/auth', authRoutes);
 app.use('/bios', bioRoutes);
 app.use('/api', apiRoutes);
+app.use('/api/zoom', zoomRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
