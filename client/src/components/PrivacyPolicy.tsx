@@ -152,7 +152,7 @@ const PrivacyPolicy: React.FC = () => {
             </p>
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-gray-700">
-                <strong>Email:</strong> privacy@conferencecallbio.com<br />
+                <strong>Email:</strong> privacy@call-bio.com<br />
                 <strong>Address:</strong> Conference Call Bio Service Privacy Team
               </p>
             </div>

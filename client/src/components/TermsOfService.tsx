@@ -219,7 +219,7 @@ const TermsOfService: React.FC = () => {
             </p>
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-gray-700">
-                <strong>Email:</strong> legal@conferencecallbio.com<br />
+                <strong>Email:</strong> legal@call-bio.com<br />
                 <strong>Address:</strong> Conference Call Bio Service Legal Team
               </p>
             </div>

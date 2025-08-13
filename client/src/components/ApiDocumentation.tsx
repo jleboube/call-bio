@@ -441,8 +441,8 @@ except Exception as e:
           </p>
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-gray-700">
-              <strong>Technical Support:</strong> api-support@conferencecallbio.com<br />
-              <strong>General Questions:</strong> support@conferencecallbio.com
+              <strong>Technical Support:</strong> api-support@call-bio.com<br />
+              <strong>General Questions:</strong> support@call-bio.com
             </p>
           </div>
         </section>
