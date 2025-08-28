@@ -4,7 +4,9 @@
 [![GitHub forks](https://img.shields.io/github/forks/jleboube/call-bio?style=social)](https://github.com/jleboube/call-bio/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/jleboube/call-bio)](https://github.com/jleboube/call-bio/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/jleboube/call-bio)](https://github.com/jleboube/call-bio/pulls)
-[![License](https://img.shields.io/github/license/jleboube/call-bio)](LICENSE)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+<!-- [![License](https://img.shields.io/github/license/jleboube/call-bio)](LICENSE) -->
+
 
 > Streamline virtual meeting introductions by automatically sharing participant bios ahead of time.  
 > Replace manual introductions with seamless, automated bio sharing.
