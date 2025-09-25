@@ -239,4 +239,42 @@ router.get('/bio/:userId', async (req, res) => {
   }
 });
 
+// System status endpoint
+router.get('/status', (req, res) => {
+  const zoomClient = require('../zoom-client');
+
+  const status = {
+    service: 'Conference Call Bio API',
+    version: '1.0.0',
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    features: {
+      bio_lookup: true,
+      bio_creation: true,
+      user_authentication: true,
+      zoom_integration: zoomClient.isConfigured,
+      zoom_webhooks: !!process.env.ZOOM_WEBHOOK_SECRET,
+      real_time_bio_sharing: zoomClient.isConfigured && !!process.env.ZOOM_WEBHOOK_SECRET
+    },
+    endpoints: {
+      bio_lookup: '/api/bios/lookup',
+      zoom_meetings: zoomClient.isConfigured ? '/api/zoom/meetings' : 'disabled',
+      webhooks: !!process.env.ZOOM_WEBHOOK_SECRET ? '/webhooks/zoom/events' : 'disabled'
+    }
+  };
+
+  if (!zoomClient.isConfigured) {
+    status.warnings = [
+      'Zoom API credentials not configured - Zoom features disabled'
+    ];
+  }
+
+  if (!process.env.ZOOM_WEBHOOK_SECRET) {
+    status.warnings = status.warnings || [];
+    status.warnings.push('Zoom webhook secret not configured - Real-time features disabled');
+  }
+
+  res.json(status);
+});
+
 module.exports = router;

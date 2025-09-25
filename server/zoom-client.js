@@ -5,23 +5,35 @@ class ZoomClient {
     this.baseURL = 'https://api.zoom.us/v2';
     this.accessToken = null;
     this.tokenExpiry = null;
-    
-    // Required environment variables
+    this.isConfigured = false;
+
+    // Check for Zoom credentials
     this.accountId = process.env.ZOOM_ACCOUNT_ID;
     this.clientId = process.env.ZOOM_CLIENT_ID;
     this.clientSecret = process.env.ZOOM_CLIENT_SECRET;
-    
+
     if (!this.accountId || !this.clientId || !this.clientSecret) {
-      console.error('Missing Zoom credentials:', {
+      console.warn('⚠️ Zoom credentials not configured. Zoom features will be disabled.', {
         accountId: !!this.accountId,
         clientId: !!this.clientId,
         clientSecret: !!this.clientSecret
       });
-      throw new Error('Missing required Zoom credentials in environment variables');
+      this.isConfigured = false;
+    } else {
+      console.log('✅ Zoom client configured successfully');
+      this.isConfigured = true;
+    }
+  }
+
+  checkConfiguration() {
+    if (!this.isConfigured) {
+      throw new Error('Zoom client not configured - missing credentials');
     }
   }
 
   async getAccessToken() {
+    this.checkConfiguration();
+
     // Return existing token if still valid
     if (this.accessToken && this.tokenExpiry && Date.now() < this.tokenExpiry) {
       return this.accessToken;
@@ -63,8 +75,10 @@ class ZoomClient {
   }
 
   async makeRequest(endpoint, options = {}) {
+    this.checkConfiguration();
+
     const token = await this.getAccessToken();
-    
+
     const url = `${this.baseURL}${endpoint}`;
     const config = {
       method: 'GET',
@@ -93,6 +107,28 @@ class ZoomClient {
 
   async getMeetingDetails(meetingId) {
     return this.makeRequest(`/meetings/${meetingId}`);
+  }
+
+  async sendChatMessage(meetingId, message) {
+    try {
+      const response = await this.makeRequest(`/live_meetings/${meetingId}/chat`, {
+        method: 'POST',
+        body: JSON.stringify({
+          message: message,
+          to_channel: 'all'
+        })
+      });
+
+      console.log('Chat message sent successfully');
+      return response;
+    } catch (error) {
+      console.error('Failed to send chat message:', error);
+      throw new Error(`Chat message failed: ${error.message}`);
+    }
+  }
+
+  async getLiveMeetingParticipants(meetingId) {
+    return this.makeRequest(`/live_meetings/${meetingId}/participants`);
   }
 }
 

@@ -43,6 +43,8 @@ const ApiDocumentation: React.FC = () => {
               <li>Sub-300ms response times</li>
               <li>Privacy-first: email addresses are never exposed publicly</li>
               <li>Rate limiting and security built-in</li>
+              <li><strong>NEW:</strong> Real-time Zoom webhook integration for auto bio sharing</li>
+              <li><strong>NEW:</strong> Meeting management and bio analytics</li>
             </ul>
           </div>
 
@@ -431,6 +433,137 @@ except Exception as e:
             Rate limits are implemented to ensure fair usage and maintain service quality. 
             If you need higher limits for enterprise usage, please contact us.
           </p>
+        </section>
+
+        {/* Webhook Integration */}
+        <section className="bg-white rounded-lg shadow-sm p-8 mb-8">
+          <h2 className="text-2xl font-semibold mb-4">🔥 NEW: Zoom Webhook Integration</h2>
+          <p className="text-gray-700 mb-6">
+            Automatically share participant bios in real-time during Zoom meetings using webhook integration.
+          </p>
+
+          <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
+            <h3 className="text-lg font-semibold text-green-800 mb-2">How It Works</h3>
+            <ol className="list-decimal pl-6 text-green-700 space-y-1">
+              <li>Configure Zoom webhook URL: <code>{baseUrl}/webhooks/zoom/events</code></li>
+              <li>When participants join meetings, webhooks are triggered</li>
+              <li>System automatically looks up bios and shares them in meeting chat</li>
+              <li>Meeting hosts get real-time bio notifications</li>
+            </ol>
+          </div>
+
+          {/* Webhook Configuration */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold mb-4">Webhook Configuration</h3>
+            <div className="bg-gray-50 p-4 rounded-lg mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold">Webhook URL:</span>
+                <button
+                  onClick={() => copyToClipboard(`{baseUrl}/webhooks/zoom/events`, 'webhook')}
+                  className="flex items-center gap-1 px-2 py-1 text-sm text-blue-600 hover:text-blue-800"
+                >
+                  {copiedEndpoint === 'webhook' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  Copy
+                </button>
+              </div>
+              <code className="text-sm">{baseUrl}/webhooks/zoom/events</code>
+            </div>
+
+            <h4 className="font-semibold mb-2">Required Events:</h4>
+            <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+              <li><code>meeting.started</code> - Initialize bio tracking</li>
+              <li><code>meeting.participant_joined</code> - Auto-share bios</li>
+              <li><code>meeting.participant_left</code> - Update attendance</li>
+              <li><code>meeting.ended</code> - Generate summary</li>
+            </ul>
+          </div>
+
+          {/* Meeting Management API */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold mb-4">Meeting Management API</h3>
+
+            <div className="space-y-6">
+              {/* List Meetings */}
+              <div className="border-l-4 border-blue-400 pl-4">
+                <div className="flex items-center justify-between mb-2">
+                  <code className="font-mono text-lg">GET /webhooks/meetings</code>
+                  <button
+                    onClick={() => copyToClipboard(`{baseUrl}/webhooks/meetings`, 'meetings')}
+                    className="flex items-center gap-1 px-2 py-1 text-sm text-blue-600"
+                  >
+                    {copiedEndpoint === 'meetings' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    Copy
+                  </button>
+                </div>
+                <p className="text-gray-700 mb-2">List recent meetings with bio sharing stats</p>
+                <p className="text-sm text-gray-600">Query params: <code>host_email</code>, <code>status</code> (active/completed), <code>limit</code></p>
+              </div>
+
+              {/* Meeting Details */}
+              <div className="border-l-4 border-green-400 pl-4">
+                <div className="flex items-center justify-between mb-2">
+                  <code className="font-mono text-lg">GET /webhooks/meetings/:meetingId</code>
+                  <button
+                    onClick={() => copyToClipboard(`{baseUrl}/webhooks/meetings/{meetingId}`, 'meeting-detail')}
+                    className="flex items-center gap-1 px-2 py-1 text-sm text-blue-600"
+                  >
+                    {copiedEndpoint === 'meeting-detail' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    Copy
+                  </button>
+                </div>
+                <p className="text-gray-700 mb-2">Get detailed meeting info with participant bios</p>
+              </div>
+
+              {/* Bio Sharing Toggle */}
+              <div className="border-l-4 border-yellow-400 pl-4">
+                <div className="flex items-center justify-between mb-2">
+                  <code className="font-mono text-lg">PATCH /webhooks/meetings/:meetingId/bio-sharing</code>
+                  <button
+                    onClick={() => copyToClipboard(`{baseUrl}/webhooks/meetings/{meetingId}/bio-sharing`, 'bio-toggle')}
+                    className="flex items-center gap-1 px-2 py-1 text-sm text-blue-600"
+                  >
+                    {copiedEndpoint === 'bio-toggle' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    Copy
+                  </button>
+                </div>
+                <p className="text-gray-700 mb-2">Enable/disable auto bio sharing for a meeting</p>
+                <p className="text-sm text-gray-600">Body: <code>{"{"} "enabled": true/false {"}"}</code></p>
+              </div>
+
+              {/* Bio Summary */}
+              <div className="border-l-4 border-purple-400 pl-4">
+                <div className="flex items-center justify-between mb-2">
+                  <code className="font-mono text-lg">GET /webhooks/meetings/:meetingId/bio-summary</code>
+                  <button
+                    onClick={() => copyToClipboard(`{baseUrl}/webhooks/meetings/{meetingId}/bio-summary`, 'bio-summary')}
+                    className="flex items-center gap-1 px-2 py-1 text-sm text-blue-600"
+                  >
+                    {copiedEndpoint === 'bio-summary' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    Copy
+                  </button>
+                </div>
+                <p className="text-gray-700 mb-2">Generate bio analytics for meeting</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Webhook Status */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Monitoring</h3>
+            <div className="border-l-4 border-gray-400 pl-4">
+              <div className="flex items-center justify-between mb-2">
+                <code className="font-mono text-lg">GET /webhooks/zoom/status</code>
+                <button
+                  onClick={() => copyToClipboard(`{baseUrl}/webhooks/zoom/status`, 'webhook-status')}
+                  className="flex items-center gap-1 px-2 py-1 text-sm text-blue-600"
+                >
+                  {copiedEndpoint === 'webhook-status' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  Copy
+                </button>
+              </div>
+              <p className="text-gray-700">Monitor webhook health and processing stats</p>
+            </div>
+          </div>
         </section>
 
         {/* Support */}

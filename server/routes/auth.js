@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const { query } = require('../db/database');
+const passport = require('../config/passport');
 
 const router = express.Router();
 
@@ -130,6 +131,42 @@ router.get('/verify', async (req, res) => {
     console.error('Token verification error:', error);
     res.status(401).json({ error: 'Invalid token' });
   }
+});
+
+// Google OAuth routes
+router.get('/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+router.get('/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login?error=oauth_failed' }),
+  async (req, res) => {
+    try {
+      // Generate JWT token for the authenticated user
+      const token = jwt.sign(
+        { userId: req.user.id, email: req.user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN }
+      );
+
+      // Redirect to frontend with token
+      res.redirect(`${process.env.CLIENT_URL || 'https://call-bio.com'}/auth/success?token=${token}`);
+    } catch (error) {
+      console.error('OAuth callback error:', error);
+      res.redirect('/login?error=oauth_callback_failed');
+    }
+  }
+);
+
+// OAuth logout
+router.post('/logout', (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error('Logout error:', err);
+      return res.status(500).json({ error: 'Logout failed' });
+    }
+    res.json({ message: 'Logged out successfully' });
+  });
 });
 
 module.exports = router;

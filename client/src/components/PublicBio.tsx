@@ -92,7 +92,7 @@ const PublicBio: React.FC = () => {
               Conference Call Bio Service
             </Link>
             <a
-              href="https://api.example.com/docs"
+              href="/api-docs"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800"

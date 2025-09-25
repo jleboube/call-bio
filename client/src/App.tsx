@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/AuthContext';
 import LandingPage from './components/LandingPage';
 import AuthPage from './components/AuthPage';
+import AuthSuccess from './components/AuthSuccess';
 import Dashboard from './components/Dashboard';
 import PublicBio from './components/PublicBio';
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -20,6 +21,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/auth/success" element={<AuthSuccess />} />
             <Route path="/dashboard" element={
               <PrivateRoute>
                 <Dashboard />

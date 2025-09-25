@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  setToken: (token: string) => Promise<void>;
   loading: boolean;
 }
 
@@ -74,11 +75,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const setToken = async (token: string) => {
+    localStorage.setItem('token', token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    // Fetch user data with the new token
+    try {
+      const response = await axios.get('/auth/verify');
+      setUser(response.data.user);
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+      logout();
+    }
+  };
+
   const value = {
     user,
     login,
     register,
     logout,
+    setToken,
     loading
   };
 

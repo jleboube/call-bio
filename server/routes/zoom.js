@@ -2,10 +2,22 @@
 const express = require('express');
 const router = express.Router();
 const zoomClient = require('../zoom-client');
-const { query } = require('../db/database'); // Match your existing pattern
+const { query } = require('../db/database');
+
+// Middleware to check Zoom configuration
+const requireZoomConfig = (req, res, next) => {
+  if (!zoomClient.isConfigured) {
+    return res.status(503).json({
+      error: 'Zoom integration not available',
+      message: 'Zoom API credentials not configured. Please contact administrator.',
+      feature_available: false
+    });
+  }
+  next();
+};
 
 // Get meeting attendees
-router.get('/meetings/:meetingId/attendees', async (req, res) => {
+router.get('/meetings/:meetingId/attendees', requireZoomConfig, async (req, res) => {
   try {
     const { meetingId } = req.params;
     
@@ -48,7 +60,7 @@ router.get('/meetings/:meetingId/attendees', async (req, res) => {
 });
 
 // Get meeting details
-router.get('/meetings/:meetingId', async (req, res) => {
+router.get('/meetings/:meetingId', requireZoomConfig, async (req, res) => {
   try {
     const { meetingId } = req.params;
     
@@ -85,7 +97,7 @@ router.get('/meetings/:meetingId', async (req, res) => {
 });
 
 // Get attendees with bio information (integrating with call-bio's existing bio lookup)
-router.get('/meetings/:meetingId/attendees-with-bios', async (req, res) => {
+router.get('/meetings/:meetingId/attendees-with-bios', requireZoomConfig, async (req, res) => {
   try {
     const { meetingId } = req.params;
     

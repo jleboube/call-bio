@@ -2,13 +2,17 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const session = require('express-session');
 const path = require('path');
 require('dotenv').config();
+
+const passport = require('./config/passport');
 
 const authRoutes = require('./routes/auth');
 const bioRoutes = require('./routes/bios');
 const apiRoutes = require('./routes/api');
 const zoomRoutes = require('./routes/zoom');
+const webhookRoutes = require('./routes/webhooks');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,10 +24,10 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
+  origin: process.env.NODE_ENV === 'production'
     ? true  // Allow all origins in production for now
     : ['https://localhost:5173', 'https://localhost:3000', 'http://localhost:5173', 'http://localhost:3000'],
-  credentials: false
+  credentials: true  // Enable credentials for OAuth
 }));
 
 // Rate limiting
@@ -33,6 +37,21 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use(limiter);
+
+// Session configuration for OAuth
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fallback-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',  // HTTPS in production
+    maxAge: 24 * 60 * 60 * 1000  // 24 hours
+  }
+}));
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -47,6 +66,7 @@ app.use('/auth', authRoutes);
 app.use('/bios', bioRoutes);
 app.use('/api', apiRoutes);
 app.use('/api/zoom', zoomRoutes);
+app.use('/webhooks', webhookRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
