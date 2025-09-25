@@ -1,5 +1,4 @@
 // server/zoom-client.js
-const fetch = require('node-fetch'); // Use existing dependency
 
 class ZoomClient {
   constructor() {

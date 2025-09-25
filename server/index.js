@@ -1,6 +1,4 @@
 const express = require('express');
-const https = require('https');
-const fs = require('fs');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -70,15 +68,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// SSL certificate configuration
-const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, '../ssl/private-key.pem')),
-  cert: fs.readFileSync(path.join(__dirname, '../ssl/certificate.pem'))
-};
-
-// Create HTTPS server
-https.createServer(sslOptions, app).listen(PORT, () => {
-  console.log(`HTTPS Server running on port ${PORT}`);
+// Start server (HTTP - Cloudflare Tunnel handles HTTPS)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);
-  console.log(`Access the application at: https://call-bio.com:${PORT}`);
+  console.log(`Access the application at: https://call-bio.com`);
 });

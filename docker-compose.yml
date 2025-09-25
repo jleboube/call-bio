@@ -3,7 +3,7 @@ services:
   web:
     build: .
     ports:
-      - "3000:3000"
+      - "5005:3000"
     environment:
       - NODE_ENV=development
       - PORT=3000
@@ -27,6 +27,8 @@ services:
 
   postgres:
     image: postgres:14
+    ports:
+      - "5433:5432"
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass
