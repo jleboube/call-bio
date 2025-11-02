@@ -7,6 +7,7 @@
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 <!-- [![License](https://img.shields.io/github/license/jleboube/call-bio)](LICENSE) -->
 
+<a href="https://www.buymeacoffee.com/muscl3n3rd" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 37px !important;width: 170px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 > Streamline virtual meeting introductions by automatically sharing participant bios ahead of time.  
 > Replace manual introductions with seamless, automated bio sharing.
